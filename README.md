@@ -1,6 +1,6 @@
 # SimpleRackLogger
 
-TODO: Write a gem description
+A simple rack for log requests informations
 
 ## Installation
 
@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+use Rack::RequestLogger, Logger.new(File.open("log/development.log", File::WRONLY | File::APPEND))
 
 ## Contributing
 
