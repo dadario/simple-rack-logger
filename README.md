@@ -1,6 +1,8 @@
 # SimpleRackLogger
 
-A simple rack for log requests informations
+A simple rack for log information from environment.
+
+For use in Rack application to log information from environment. Special from request data.
 
 ## Installation
 

@@ -6,10 +6,10 @@ require 'simple_rack_logger/version'
 Gem::Specification.new do |gem|
   gem.name          = "simple-rack-logger"
   gem.version       = SimpleRackLogger::VERSION
-  gem.authors       = ["$GIT_AUTHOR_NAME"]
-  gem.email         = ["$GIT_AUTHOR_EMAIL"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.authors       = ["Adriano Dadario"]
+  gem.email         = ["dadario@gmail.com"]
+  gem.description   = %q{A simple rack for log information from environment.}
+  gem.summary       = %q{For use in Rack application to log information from environment. Special from request data}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
