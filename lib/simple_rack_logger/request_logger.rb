@@ -19,10 +19,9 @@ module Rack
 
     def call(env)
       request = Rack::Request.new(env)
-      block = @filters.select { |filter| filter.respond_to?(:filter) && filter.send(:filter, request) }
-
+      block   = @filters.select { |filter| filter.respond_to?(:filter) && filter.send(:filter, request) }
       if block.empty?
-        logger.info(expose(request))
+        logger.info(expose(request, env))
         logger.flush
       end
 
@@ -30,9 +29,16 @@ module Rack
     end
 
     private
-    def expose(request)
+    def expose(request, env)
+      show = "#{request.request_method}: #{request.url} for #{request.ip}"
+
       params = request.params.map { |key, value| "#{key}=#{value}" }
-      "#{request.request_method}: #{request.url} for #{request.ip} with #{request.user_agent} [params: #{params.join('; ')}]"
+      show << "[params: #{params.join('; ')}]" unless params.empty?
+
+      headers = env.select { |key, value| key.start_with?('HTTP_') }
+      show << " [heades: #{headers.collect { |pair| pair.join("=") }}" unless headers.empty?
+
+      show
     end
 
   end
