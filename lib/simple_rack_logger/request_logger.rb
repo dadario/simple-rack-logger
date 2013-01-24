@@ -8,14 +8,24 @@ module Rack
     end
 
     def call(env)
+
+      uuid = unique_identy
+
       request = Rack::Request.new(env)
       block   = @filters.select { |filter| filter.respond_to?(:filter) && filter.send(:filter, request) }
       if block.empty?
-        logger.info(expose(request, env))
+        logger.info("IDENT:[#{uuid}] #{expose(request, env)}")
         logger.flush
       end
 
-      @app.call(env)
+      return_value = @app.call(env)
+
+      if block.empty?
+        logger.info("IDENT:[#{uuid}] RETURN_VALUE:[#{return_value.to_s}]")
+        logger.flush
+      end
+
+      return_value
     end
 
     private
@@ -26,10 +36,13 @@ module Rack
       show << "[params: #{params.join('; ')}]" unless params.empty?
 
       headers = env.select { |key, value| key.start_with?('HTTP_') }
-      show << " [heades: #{headers.collect { |pair| pair.join("=") }}" unless headers.empty?
+      show << " [headers: #{headers.collect { |pair| pair.join("=") }}" unless headers.empty?
 
       show
     end
 
+    def unique_identy
+      UUID.new.generate
+    end
   end
 end

@@ -41,9 +41,15 @@ describe Rack::RequestLogger do
     }
 
     it 'log request information from env' do
-      app.should_receive(:call)
-      logger.should_receive(:info).with('GET: http://localhost:9393/v1/crachas.xml for 127.0.0.1 [heades: ["HTTP_USER_AGENT=curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1 zlib/1.2.3.4 libidn/1.23 librtmp/2.3", "HTTP_HOST=localhost:9393", "HTTP_ACCEPT=*/*", "HTTP_VERSION=HTTP/1.1"]')
+
+      subject.should_receive(:unique_identy).and_return('1234')
+
+      app.should_receive(:call).and_return("Something")
+      logger.should_receive(:info).with('IDENT:[1234] GET: http://localhost:9393/v1/crachas.xml for 127.0.0.1 [headers: ["HTTP_USER_AGENT=curl/7.22.0 (x86_64-pc-linux-gnu) libcurl/7.22.0 OpenSSL/1.0.1 zlib/1.2.3.4 libidn/1.23 librtmp/2.3", "HTTP_HOST=localhost:9393", "HTTP_ACCEPT=*/*", "HTTP_VERSION=HTTP/1.1"]')
+      logger.should_receive(:info).with('IDENT:[1234] RETURN_VALUE:[Something]')
+
       subject.call(env)
+
     end
   end
 
