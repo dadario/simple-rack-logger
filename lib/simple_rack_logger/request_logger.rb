@@ -14,14 +14,14 @@ module Rack
       request = Rack::Request.new(env)
       block   = @filters.select { |filter| filter.respond_to?(:filter) && filter.send(:filter, request) }
       if block.empty?
-        logger.info("IDENT:[#{uuid}] #{expose(request, env)}")
+        logger.info("IDENT:|#{uuid}| REQUEST_VALUE:|#{expose(request, env)}|")
         logger.flush
       end
 
       return_value = @app.call(env)
 
       if block.empty?
-        logger.info("IDENT:[#{uuid}] RETURN_VALUE:[#{return_value.to_s}]")
+        logger.info("IDENT:|#{uuid}| RETURN_VALUE:|#{expose_return(return_value).to_s}|")
         logger.flush
       end
 
@@ -41,8 +41,17 @@ module Rack
       show
     end
 
+    def expose_return(return_value)
+      return_value = [return_value] unless return_value.is_a? Array
+
+      return_value.map do |item|
+        (item.is_a? Rack::BodyProxy) ? item.send(:body) : item.to_s
+      end
+    end
+
     def unique_identy
       UUID.new.generate
     end
   end
 end
+
